@@ -50,11 +50,17 @@
 #define ASSERT(X) \
    if( !(X) ) {  internal::assertFct ( (X), #X, "", __FILE__, __LINE__ ); }
 
+#define DEBUG(MSG) \
+   { std::stringstream ss; \
+     ss << MSG; \
+     internal::debugFct ( ss.str(), __FILE__, __LINE__ );\
+   }
 
 #else
 
 #define ASSERT_MSG(X, MSG)
 #define ASSERT(X)
+#define DEBUG(MSG)
 
 #endif //NDEBUG
 
@@ -72,6 +78,9 @@ namespace internal
                    const char * const filename, int line );
 
    void warnFct( const std::string & message,
+                 const char * const filename, int line );
+
+   void debugFct( const std::string & message,
                  const char * const filename, int line );
 
 }

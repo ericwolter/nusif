@@ -59,6 +59,11 @@ namespace internal
       std::cerr <<  "\t" << message << std::endl;
    }
 
+   void debugFct( const std::string & message, const char * const filename, int line )
+   {
+      std::cout << "Debug!\n\tFile:       " << filename << ":" << line << "\n";
+      std::cout <<  "\t" << message << std::endl;
+   }
 
 }
 

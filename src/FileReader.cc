@@ -1,42 +1,92 @@
 
-#include <FileReader.hh>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 
+#include <FileReader.hh>
 
 void FileReader::registerIntParameter(const std::string &key, int init)
 {
-   //TODO
+    intParameters[key] = init;
 }
 
 void FileReader::registerRealParameter(const std::string &key, real init)
 {
-   //TODO
+   realParameters[key] = init;
 }
 
 void FileReader::registerStringParameter(const std::string &key, const std::string &init)
 {
-   //TODO
+   stringParameters[key] = init;
 }
 
 void FileReader::setParameter(const std::string &key, const std::string &in)
 {
-   //TODO
+   stringParameters[key] = in;
 }
 
 void FileReader::setParameter(const std::string &key, real in)
 {
-   //TODO
+   realParameters[key] = in;
 }
 
 void FileReader::setParameter(const std::string &key, int in)
 {
-   //TODO
+   intParameters[key] = in;
 }
 
 
 bool FileReader::readFile(const std::string &name)
 {
-   //TODO
-   return false;
+    DEBUG("read file");
+
+    std::ifstream file;
+    file.open(name.c_str());
+    if(!file) {
+        WARN("Configuration file could not be opened.")
+        return false;
+    }
+
+    DEBUG("file opened");
+
+    std::string line;
+    while(std::getline(file, line)) {
+
+        if(line.find('#') != line.npos) { // ignore comments
+            line.erase(line.find('#'));
+        }
+
+        if(line.find_first_not_of("\t\n ") == line.npos) { // ignore empty lines
+            continue;
+        }
+
+
+        std::istringstream keyvalue(line);
+
+        std::string key;
+        keyvalue >> key;
+
+        // determine type of parameter value based on the registered parameters
+        if(intParameters.count(key)) {
+            int value;
+            keyvalue >> value;
+            intParameters[key] = value;
+        } else if (realParameters.count(key)) {
+            real value;
+            keyvalue >> value;
+            realParameters[key] = value;
+        } else if (stringParameters.count(key)) {
+            std::string value;
+            keyvalue >> value;
+            stringParameters[key] = value;
+        } else {
+            WARN("Unregistered parameter: " + key);
+        }
+    }
+
+    file.close();
+    return true;
 }
 
 
