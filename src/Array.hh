@@ -1,8 +1,10 @@
 #ifndef ARRAY_HH
 #define ARRAY_HH
 
+#include <vector>
 
-#include <Types.hh>
+#include "Types.hh"
+#include "Debug.hh"
 
 
 //*******************************************************************************************************************
@@ -21,9 +23,9 @@ public:
 
 
    // Depending on your implementation you might need the following:
-   // ~Array();
-   // Array(const Array& s);
-   // Array& operator= (const Array& s);
+   ~Array();
+   Array(const Array& s);
+   Array& operator= (const Array& s);
 
 
    // Access Operators for 1D, 2D and 3D
@@ -32,11 +34,9 @@ public:
    inline real & operator () ( int i, int j, int k );
 
    // for const Arrays the following access operators are required
-   // inline const real & operator () ( int i ) const;
-   // inline const real & operator () ( int i ,int j ) const;
-   // inline const real & operator () ( int i, int j, int k ) const;
-
-
+   inline const real & operator () ( int i ) const;
+   inline const real & operator () ( int i ,int j ) const;
+   inline const real & operator () ( int i, int j, int k ) const;
 
    // initialize the whole array with a constant value
    void fill( real value );
@@ -55,6 +55,8 @@ public:
 
 private:
 
+   real *grid;
+   int dimensions[3];
 
 };
 
@@ -69,29 +71,48 @@ private:
 // Operator() 1D
 inline real& Array::operator ()(int i)
 {
-   //TODO
-   static double dummy;
-   return dummy;
+   ASSERT(i >= 0 && i < getSize())
+
+   return grid[i];
 }
 
 // Operator() 2D
 inline real& Array::operator ()(int i,int j)
 {
-   //TODO
-   static double dummy;
-   return dummy;
+   ASSERT(i >= 0 && i < getSize(0))
+   ASSERT(j >= 0 && j < getSize(1))
+
+   return grid[i + getSize(0) * j];
 }
 
 // Operator() 3D
 inline real& Array::operator ()(int i, int j, int k)
 {
-   //TODO
-   static double dummy;
-   return dummy;
+   ASSERT(i >= 0 && i < getSize(0))
+   ASSERT(j >= 0 && j < getSize(1))
+   ASSERT(k >= 0 && k < getSize(2))
+
+   return grid[i + getSize(0) * (j + getSize(1) * k)];
 }
 
+inline const real & Array::operator () ( int i ) const {
+   ASSERT(i >= 0 && i < getSize())
 
+   return grid[i];
+}
+inline const real & Array::operator () ( int i ,int j ) const {
+   ASSERT(i >= 0 && i < getSize(0))
+   ASSERT(j >= 0 && j < getSize(1))
 
+   return grid[i + getSize(0) * j];
+}
+inline const real & Array::operator () ( int i, int j, int k ) const {
+   ASSERT(i >= 0 && i < getSize(0))
+   ASSERT(j >= 0 && j < getSize(1))
+   ASSERT(k >= 0 && k < getSize(2))
+
+   return grid[i + getSize(0) * (j + getSize(1) * k)];
+}
 
 #endif //ARRAY_HH
 

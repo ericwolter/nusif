@@ -39,16 +39,12 @@ void FileReader::setParameter(const std::string &key, int in)
 
 bool FileReader::readFile(const std::string &name)
 {
-    DEBUG("read file");
-
     std::ifstream file;
     file.open(name.c_str());
     if(!file) {
         WARN("Configuration file could not be opened.")
         return false;
     }
-
-    DEBUG("file opened");
 
     std::string line;
     while(std::getline(file, line)) {

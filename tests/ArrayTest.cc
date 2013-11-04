@@ -12,17 +12,15 @@ void copyTest()
    Array arr (size);
    for ( int i = 0; i<size; ++i )
       arr(i) = i;
-
+   
    // check if values where set correctly
    for ( int i = 0; i<size; ++i )
       CHECK( arr(i) == i );
-
 
    // create a copy of the array, and check if values are the same
    Array arrCopy (arr);
    for ( int i = 0; i<size; ++i )
       CHECK( arrCopy(i) == i );
-
 
    // write new values to copy
    for ( int i = 0; i<size; ++i )
