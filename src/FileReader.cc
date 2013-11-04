@@ -93,7 +93,21 @@ bool FileReader::readFile(const std::string &name)
 
 void FileReader::printParameters() const
 {
-   //TODO
+    std::cout << "Integer parameters: " << std::endl;
+    std::cout << "--------------------" << std::endl;
+    for(std::map<std::string,int>::const_iterator it = intParameters.begin(); it != intParameters.end(); it++) {
+        std::cout << it->first << " = " << it->second << std::endl;
+    }
+    std::cout << "Real parameters: " << std::endl;
+    for(std::map<std::string,real>::const_iterator it = realParameters.begin(); it != realParameters.end(); it++) {
+        std::cout << it->first << " = " << it->second << std::endl;
+    }
+    std::cout << "--------------------" << std::endl;
+    std::cout << "String parameters: " << std::endl;
+    for(std::map<std::string,std::string>::const_iterator it = stringParameters.begin(); it != stringParameters.end(); it++) {
+        std::cout << it->first << " = " << it->second << std::endl;
+    }
+    std::cout << "--------------------" << std::endl;
 }
 
 
