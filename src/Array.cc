@@ -102,7 +102,7 @@ Array& Array::operator= (const Array& s) {
 //initialize the whole array with a constant value
 void Array::fill( real value )
 {
-   std::fill(&grid[0], &grid[getSize() - 1], value);
+   std::fill(&grid[0], &grid[getSize()], value);
 }
 
 
