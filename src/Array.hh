@@ -27,7 +27,6 @@ public:
    Array(const Array& s);
    Array& operator= (const Array& s);
 
-
    // Access Operators for 1D, 2D and 3D
    inline real & operator () ( int i );
    inline real & operator () ( int i ,int j );
@@ -41,14 +40,12 @@ public:
    // initialize the whole array with a constant value
    void fill( real value );
 
-
    // return total size of the array
    int getSize() const;
 
    // return xSize for dimension==0, ySize for dimension==1 and zSize for dimension==2
    // other dimension values are not allowed
    int getSize(int dimension ) const;
-
 
    // Print the whole array ( for debugging purposes )
    void print();
