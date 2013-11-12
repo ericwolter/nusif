@@ -57,7 +57,7 @@ public:
         return dy_;
     }
 
-    real calculateResidual ();
+    real calculateResidual();
 
 protected:
     Array p_;   //< pressure field
@@ -65,6 +65,8 @@ protected:
 
     real dx_;   //< distance between two grid points in x direction
     real dy_;   //< distance between two grid points in y direction
+private:
+    real caluclateRhsSum(); 
 };
 
 

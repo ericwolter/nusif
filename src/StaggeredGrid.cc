@@ -10,6 +10,8 @@ StaggeredGrid::StaggeredGrid(int xSize, int ySize, real deltaX, real deltaY) :
 {
     ASSERT(dx_ > 0.0)
     ASSERT(dy_ > 0.0)
+    
+    ASSERT( std::abs(caluclateRhsSum()) < 1e-5 );
 }
 
 // Constructor to create a staggered grid from a parsed configuration file
@@ -21,6 +23,25 @@ StaggeredGrid::StaggeredGrid(const FileReader &configuration) :
 {
     ASSERT(dx_ > 0.0)
     ASSERT(dy_ > 0.0)
+    
+    ASSERT( std::abs(caluclateRhsSum()) < 1e-5 );
+}
+
+real StaggeredGrid::caluclateRhsSum()
+{
+    int imax = rhs().getSize(0) - 2;
+    int jmax = rhs().getSize(1) - 2;
+    
+    real rhs_sum = 0.0;
+    for (int i = 1; i <= imax; i++)
+    {
+        for (int j = 1; j <= jmax; ++j)
+        {
+            rhs_sum += rhs()(i,j);
+        }
+    }
+    
+    return rhs_sum;
 }
 
 real StaggeredGrid::calculateResidual()
