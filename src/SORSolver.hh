@@ -7,7 +7,7 @@ class SORSolver
 {
 public:
     // Constructor to manually create SORSolver
-    SORSolver(int itermax, real eps, real omg);
+    SORSolver(int max_iterations, real epsilon, real weight);
 
     // Constructor to create a SORSolver from a parsed configuration file
     SORSolver(const FileReader &configuration);

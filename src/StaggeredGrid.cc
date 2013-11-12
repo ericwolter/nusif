@@ -2,12 +2,14 @@
 
 #include <cmath>
 
-StaggeredGrid::StaggeredGrid(int xSize, int ySize, real dx, real dy) :
+StaggeredGrid::StaggeredGrid(int xSize, int ySize, real deltaX, real deltaY) :
     p_(xSize + 2, ySize + 2),
     rhs_(xSize + 2, ySize + 2),
-    dx_(dx),
-    dy_(dy)
+    dx_(deltaX),
+    dy_(deltaY)
 {
+    ASSERT(dx_ > 0.0)
+    ASSERT(dy_ > 0.0)
 }
 
 // Constructor to create a staggered grid from a parsed configuration file
@@ -17,6 +19,8 @@ StaggeredGrid::StaggeredGrid(const FileReader &configuration) :
     dx_(configuration.getRealParameter("xlength") / configuration.getIntParameter("imax")),
     dy_(configuration.getRealParameter("ylength") / configuration.getIntParameter("jmax"))
 {
+    ASSERT(dx_ > 0.0)
+    ASSERT(dy_ > 0.0)
 }
 
 real StaggeredGrid::calculateResidual()

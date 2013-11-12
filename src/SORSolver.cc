@@ -6,10 +6,10 @@
 
 #include "Debug.hh"
 
-SORSolver::SORSolver(int itermax, real eps, real omg) :
-    itermax_(itermax),
-    eps_(eps),
-    omg_(omg)
+SORSolver::SORSolver(int max_iterations, real epsilon, real weight) :
+    itermax_(max_iterations),
+    eps_(epsilon),
+    omg_(weight)
 {
 
 }

@@ -38,7 +38,6 @@ Array::~Array()
 
 Array::Array(const Array &s)
 {
-
     grid = new real[s.getSize()];
 
     int dimX = s.getSize(0);

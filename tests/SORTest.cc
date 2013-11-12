@@ -2,9 +2,13 @@
 #include <iostream>
 #include <cmath>
 
-#include "FileReader.hh"
 #include "StaggeredGrid.hh"
 #include "SORSolver.hh"
+
+float randomFloat(float lower, float upper)
+{
+    return ((upper-lower)*((float)rand()/static_cast<float>(RAND_MAX)))+lower;
+}
 
 void initGridSetup1( StaggeredGrid & grid )
 {
@@ -15,9 +19,7 @@ void initGridSetup1( StaggeredGrid & grid )
     {
         for (int y = 0; y < grid.p().getSize(1); ++y)
         {
-            const float lower = 0.0f;
-            const float upper = 1.0f;
-            grid.p()(x,y) = ((upper-lower)*((float)rand()/RAND_MAX))+lower;
+            grid.p()(x,y) = randomFloat(0.0f, 10.0f);
         }
     }
     grid.rhs().fill(0.0);
@@ -32,9 +34,7 @@ void initGridSetup2( StaggeredGrid & grid )
     {
         for (int y = 0; y < grid.p().getSize(1); ++y)
         {
-            const float lower = 0.0f;
-            const float upper = 1.0f;
-            grid.p()(x,y) = ((upper-lower)*((float)rand()/RAND_MAX))+lower;
+            grid.p()(x,y) = randomFloat(0.0f, 10.0f);
         }
     }
     for (int x = 0; x < grid.rhs().getSize(0); ++x)
@@ -46,44 +46,73 @@ void initGridSetup2( StaggeredGrid & grid )
     }
 }
 
+void initGridSetup3 ( StaggeredGrid &grid )
+{
+    // Setup 3:
+    //    - grid.p   : alternating zeros and ones
+    //    - grid.rhs : init with zero
+    for (int x = 0; x < grid.p().getSize(0); ++x)
+    {
+        for (int y = 0; y < grid.p().getSize(1); ++y)
+        {
+            if(x % 2 == 0) {
+                if (y % 2 == 0) {
+                    grid.p()(x,y) = 1;
+                } else {
+                    grid.p()(x,y) = 0;                                      
+                }
+            } else {
+                if (y % 2 == 0) {
+                    grid.p()(x,y) = 0;                  
+                } else {
+                    grid.p()(x,y) = 1;                                       
+                }
+            }
+        }
+    }
+    grid.rhs().fill(0.0);
+}
+
 
 
 int main()
 {
-    FileReader reader;
-
-    reader.registerStringParameter  ("name");
-    reader.registerRealParameter    ("xlength");
-    reader.registerRealParameter    ("ylength");
-    reader.registerIntParameter     ("imax");
-    reader.registerIntParameter     ("jmax");
-
-    reader.registerIntParameter     ("itermax");
-    reader.registerRealParameter    ("eps");
-    reader.registerRealParameter    ("omg");
-
-    bool res = reader.readFile ( "poisson.par" );
-    CHECK_MSG(res, "Could not open file 'poisson.par' which has to be in the current directory.");
-
+    real xlength = 1.0;
+    real ylength = 1.0;
+    int imax = 2;
+    int jmax = 2;
+    
     // Create staggered grid
-    StaggeredGrid grid (reader);
-
+    StaggeredGrid grid (imax,jmax, xlength/imax, ylength/jmax);
+    
+    int itermax = 3000;
+    real eps = 0.000001;
+    real omg = 1.7;
+    
     // create solver
-    SORSolver solver (reader);
+    SORSolver solver (itermax, eps, omg);
 
-    std::cout << "Grid Setup 1" << std::endl;
+    std::cout << "Test: Grid Setup 1" << std::endl;
     initGridSetup1( grid );
-    res = solver.solve(grid);
-    CHECK_MSG(res, "Solver did not converged for grid setup 1");
-    CHECK_MSG(grid.calculateResidual() < reader.getRealParameter("eps"), "Residual is above threshold eps for grid setup 1");
-    if(res) std::cout << "OK" << std::endl;    
-
-    std::cout << "Grid Setup 2" << std::endl;
+    bool res = solver.solve(grid);
+    CHECK_MSG(res, "Solver did not converge for grid setup 1");
+    CHECK_MSG(grid.calculateResidual() < eps, "Residual is above threshold eps for grid setup 1");
+    if(res) std::cout << "OK!" << std::endl;    
+    
+    std::cout << "Test: Grid Setup 2" << std::endl;
     initGridSetup2( grid );
     res = solver.solve(grid);
-    CHECK_MSG(res, "Solver did not converged for grid setup 2");
-    CHECK_MSG(grid.calculateResidual() < reader.getRealParameter("eps"), "Residual is above threshold eps for grid setup 2");
-    if(res) std::cout << "OK" << std::endl;
-
+    CHECK_MSG(res, "Solver did not converge for grid setup 2");
+    CHECK_MSG(grid.calculateResidual() < eps, "Residual is above threshold eps for grid setup 2");
+    if(res) std::cout << "OK!" << std::endl;
+    
+    std::cout << "Test: Grid Setup 3" << std::endl;
+    initGridSetup3( grid );
+    res = solver.solve(grid);
+    CHECK_MSG(res, "Solver did not converge for grid setup 3");
+    CHECK_MSG(grid.calculateResidual() < eps, "Residual is above threshold eps for grid setup 3");
+    if(res) std::cout << "OK!" << std::endl;    
+    CHECK(std::abs( grid.p()(1,1) - 0.5 ) < 1e-5);
+    
     return 0;
 }
