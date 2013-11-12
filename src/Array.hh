@@ -16,44 +16,44 @@
 class Array
 {
 public:
-   // Constructors for 1D,2D and 3D
-   Array( int xSize );
-   Array( int xSize, int ySize );
-   Array( int xSize, int ySize, int zSize );
+    // Constructors for 1D,2D and 3D
+    Array( int xSize );
+    Array( int xSize, int ySize );
+    Array( int xSize, int ySize, int zSize );
 
 
-   // Depending on your implementation you might need the following:
-   ~Array();
-   Array(const Array& s);
-   Array& operator= (const Array& s);
+    // Depending on your implementation you might need the following:
+    ~Array();
+    Array(const Array &s);
+    Array &operator= (const Array &s);
 
-   // Access Operators for 1D, 2D and 3D
-   inline real & operator () ( int i );
-   inline real & operator () ( int i ,int j );
-   inline real & operator () ( int i, int j, int k );
+    // Access Operators for 1D, 2D and 3D
+    inline real &operator () ( int i );
+    inline real &operator () ( int i , int j );
+    inline real &operator () ( int i, int j, int k );
 
-   // for const Arrays the following access operators are required
-   inline const real & operator () ( int i ) const;
-   inline const real & operator () ( int i ,int j ) const;
-   inline const real & operator () ( int i, int j, int k ) const;
+    // for const Arrays the following access operators are required
+    inline const real &operator () ( int i ) const;
+    inline const real &operator () ( int i , int j ) const;
+    inline const real &operator () ( int i, int j, int k ) const;
 
-   // initialize the whole array with a constant value
-   void fill( real value );
+    // initialize the whole array with a constant value
+    void fill( real value );
 
-   // return total size of the array
-   int getSize() const;
+    // return total size of the array
+    int getSize() const;
 
-   // return xSize for dimension==0, ySize for dimension==1 and zSize for dimension==2
-   // other dimension values are not allowed
-   int getSize(int dimension ) const;
+    // return xSize for dimension==0, ySize for dimension==1 and zSize for dimension==2
+    // other dimension values are not allowed
+    int getSize(int dimension ) const;
 
-   // Print the whole array ( for debugging purposes )
-   void print();
+    // Print the whole array ( for debugging purposes )
+    void print();
 
 private:
 
-   real *grid;
-   int dimensions[3];
+    real *grid;
+    int dimensions[3];
 
 };
 
@@ -66,49 +66,52 @@ private:
 
 
 // Operator() 1D
-inline real& Array::operator ()(int i)
+inline real &Array::operator ()(int i)
 {
-   ASSERT(i >= 0 && i < getSize())
+    ASSERT(i >= 0 && i < getSize())
 
-   return grid[i];
+    return grid[i];
 }
 
 // Operator() 2D
-inline real& Array::operator ()(int i,int j)
+inline real &Array::operator ()(int i, int j)
 {
-   ASSERT(i >= 0 && i < getSize(0))
-   ASSERT(j >= 0 && j < getSize(1))
+    ASSERT(i >= 0 && i < getSize(0))
+    ASSERT(j >= 0 && j < getSize(1))
 
-   return grid[i + getSize(0) * j];
+    return grid[i + getSize(0) * j];
 }
 
 // Operator() 3D
-inline real& Array::operator ()(int i, int j, int k)
+inline real &Array::operator ()(int i, int j, int k)
 {
-   ASSERT(i >= 0 && i < getSize(0))
-   ASSERT(j >= 0 && j < getSize(1))
-   ASSERT(k >= 0 && k < getSize(2))
+    ASSERT(i >= 0 && i < getSize(0))
+    ASSERT(j >= 0 && j < getSize(1))
+    ASSERT(k >= 0 && k < getSize(2))
 
-   return grid[i + getSize(0) * (j + getSize(1) * k)];
+    return grid[i + getSize(0) * (j + getSize(1) * k)];
 }
 
-inline const real & Array::operator () ( int i ) const {
-   ASSERT(i >= 0 && i < getSize())
+inline const real &Array::operator () ( int i ) const
+{
+    ASSERT(i >= 0 && i < getSize())
 
-   return grid[i];
+    return grid[i];
 }
-inline const real & Array::operator () ( int i ,int j ) const {
-   ASSERT(i >= 0 && i < getSize(0))
-   ASSERT(j >= 0 && j < getSize(1))
+inline const real &Array::operator () ( int i , int j ) const
+{
+    ASSERT(i >= 0 && i < getSize(0))
+    ASSERT(j >= 0 && j < getSize(1))
 
-   return grid[i + getSize(0) * j];
+    return grid[i + getSize(0) * j];
 }
-inline const real & Array::operator () ( int i, int j, int k ) const {
-   ASSERT(i >= 0 && i < getSize(0))
-   ASSERT(j >= 0 && j < getSize(1))
-   ASSERT(k >= 0 && k < getSize(2))
+inline const real &Array::operator () ( int i, int j, int k ) const
+{
+    ASSERT(i >= 0 && i < getSize(0))
+    ASSERT(j >= 0 && j < getSize(1))
+    ASSERT(k >= 0 && k < getSize(2))
 
-   return grid[i + getSize(0) * (j + getSize(1) * k)];
+    return grid[i + getSize(0) * (j + getSize(1) * k)];
 }
 
 #endif //ARRAY_HH

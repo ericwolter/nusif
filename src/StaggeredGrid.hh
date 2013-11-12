@@ -23,28 +23,48 @@
 class StaggeredGrid
 {
 public:
-   // Constructors to manually create staggered grid
-   StaggeredGrid ( int xSize, int ySize, real dx, real dy );
+    // Constructors to manually create staggered grid
+    StaggeredGrid(int xSize, int ySize, real dx, real dy);
 
-   // Constructor to create a staggered grid from a parsed configuration file
-   // StaggeredGrid ( const FileReader & configuration );       // TODO implement!
+    // Constructor to create a staggered grid from a parsed configuration file
+    StaggeredGrid(const FileReader & configuration);
 
-   // Getters / Setters for member variables
-   Array & p()    { return p_;    }
-   Array & rhs()  { return rhs_;  }
+    // Getters / Setters for member variables
+    Array &p()
+    {
+        return p_;
+    }
+    Array &rhs()
+    {
+        return rhs_;
+    }
 
-   const Array & p()   const { return p_;   }
-   const Array & rhs() const { return rhs_; }
+    const Array &p()   const
+    {
+        return p_;
+    }
+    const Array &rhs() const
+    {
+        return rhs_;
+    }
 
-   real dx() const { return dx_; }
-   real dy() const { return dy_; }
+    real dx() const
+    {
+        return dx_;
+    }
+    real dy() const
+    {
+        return dy_;
+    }
+
+    real calculateResidual ();
 
 protected:
-   Array p_;   //< pressure field
-   Array rhs_; //< right hand side of the pressure equation
+    Array p_;   //< pressure field
+    Array rhs_; //< right hand side of the pressure equation
 
-   real dx_;   //< distance between two grid points in x direction
-   real dy_;   //< distance between two grid points in y direction
+    real dx_;   //< distance between two grid points in x direction
+    real dy_;   //< distance between two grid points in y direction
 };
 
 
