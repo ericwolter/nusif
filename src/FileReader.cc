@@ -50,13 +50,12 @@ bool FileReader::readFile(const std::string &name)
     std::string line;
     while (std::getline(file, line))
     {
-
         if (line.find('#') != line.npos)  // ignore comments
         {
             line.erase(line.find('#'));
         }
 
-        if (line.find_first_not_of("\t\n ") == line.npos)  // ignore empty lines
+        if (line.find_first_not_of("\t\r\n ") == line.npos)  // ignore empty lines
         {
             continue;
         }

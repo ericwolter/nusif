@@ -71,13 +71,19 @@ int main()
     // create solver
     SORSolver solver (reader);
 
+    std::cout << "Grid Setup 1" << std::endl;
     initGridSetup1( grid );
-    CHECK(solver.solve(grid));
-    CHECK(grid.calculateResidual() < reader.getRealParameter("eps"));
+    res = solver.solve(grid);
+    CHECK_MSG(res, "Solver did not converged for grid setup 1");
+    CHECK_MSG(grid.calculateResidual() < reader.getRealParameter("eps"), "Residual is above threshold eps for grid setup 1");
+    if(res) std::cout << "OK" << std::endl;    
 
+    std::cout << "Grid Setup 2" << std::endl;
     initGridSetup2( grid );
-    CHECK(solver.solve(grid));
-    CHECK(grid.calculateResidual() < reader.getRealParameter("eps"));
+    res = solver.solve(grid);
+    CHECK_MSG(res, "Solver did not converged for grid setup 2");
+    CHECK_MSG(grid.calculateResidual() < reader.getRealParameter("eps"), "Residual is above threshold eps for grid setup 2");
+    if(res) std::cout << "OK" << std::endl;
 
     return 0;
 }
