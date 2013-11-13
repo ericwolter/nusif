@@ -15,11 +15,11 @@ void initGridSetup1( StaggeredGrid & grid )
     // Setup 1:
     //    - grid.p   : init with random values
     //    - grid.rhs : init with zero
-    for (int x = 0; x < grid.p().getSize(0); ++x)
+    for (int i = 0; i < grid.p().getSize(0); ++i)
     {
-        for (int y = 0; y < grid.p().getSize(1); ++y)
+        for (int j = 0; j < grid.p().getSize(1); ++j)
         {
-            grid.p()(x,y) = randomFloat(0.0f, 10.0f);
+            grid.p()(i,j) = randomFloat(0.0f, 10.0f);
         }
     }
     grid.rhs().fill(0.0);
@@ -30,18 +30,18 @@ void initGridSetup2( StaggeredGrid & grid )
     // Setup 2:
     //    - grid.p   : init with random values
     //    - grid.rhs : f(x,y) = sin(2 * x * \pi)
-    for (int x = 0; x < grid.p().getSize(0); ++x)
+    for (int i = 0; i < grid.p().getSize(0); ++i)
     {
-        for (int y = 0; y < grid.p().getSize(1); ++y)
+        for (int j = 0; j < grid.p().getSize(1); ++j)
         {
-            grid.p()(x,y) = randomFloat(0.0f, 10.0f);
+            grid.p()(i,j) = randomFloat(0.0f, 10.0f);
         }
     }
-    for (int x = 0; x < grid.rhs().getSize(0); ++x)
+    for (int i = 0; i < grid.rhs().getSize(0); ++i)
     {
-        for (int y = 0; y < grid.rhs().getSize(1); ++y)
+        for (int j = 0; j < grid.rhs().getSize(1); ++j)
         {
-            grid.rhs()(x,y) = sin(2 * x * M_PI);
+            grid.rhs()(i,j) = sin(2 * ((i - 0.5) * grid.dx()) * M_PI);
         }
     }
 }
@@ -51,21 +51,21 @@ void initGridSetup3 ( StaggeredGrid &grid )
     // Setup 3:
     //    - grid.p   : alternating zeros and ones
     //    - grid.rhs : init with zero
-    for (int x = 0; x < grid.p().getSize(0); ++x)
+    for (int i = 0; i < grid.p().getSize(0); ++i)
     {
-        for (int y = 0; y < grid.p().getSize(1); ++y)
+        for (int j = 0; j < grid.p().getSize(1); ++j)
         {
-            if(x % 2 == 0) {
-                if (y % 2 == 0) {
-                    grid.p()(x,y) = 1;
+            if(i % 2 == 0) {
+                if (j % 2 == 0) {
+                    grid.p()(i,j) = 1;
                 } else {
-                    grid.p()(x,y) = 0;                                      
+                    grid.p()(i,j) = 0;                                      
                 }
             } else {
-                if (y % 2 == 0) {
-                    grid.p()(x,y) = 0;                  
+                if (j % 2 == 0) {
+                    grid.p()(i,j) = 0;                  
                 } else {
-                    grid.p()(x,y) = 1;                                       
+                    grid.p()(i,j) = 1;                                       
                 }
             }
         }
@@ -79,8 +79,8 @@ int main()
 {
     real xlength = 1.0;
     real ylength = 1.0;
-    int imax = 2;
-    int jmax = 2;
+    int imax = 30;
+    int jmax = 30;
     
     // Create staggered grid
     StaggeredGrid grid (imax,jmax, xlength/imax, ylength/jmax);
