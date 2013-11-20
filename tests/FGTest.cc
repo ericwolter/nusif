@@ -108,9 +108,9 @@ void testIncreaseX()
 
     for (int i = 0; i < imax + 2; ++i)
     {
-        for (int j = 0; j < jmax+2; ++j)
+        for (int j = 0; j < jmax + 2; ++j)
         {
-            simulation.grid().u()(i,j) = (float)i+1;
+            simulation.grid().u()(i, j) = (float)i + 1;
         }
     }
     simulation.simulateTimeStepCount(1);

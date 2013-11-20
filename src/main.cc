@@ -10,7 +10,7 @@
 
 float randomFloat(float lower, float upper)
 {
-    return ((upper-lower)*((float)rand()/static_cast<float>(RAND_MAX)))+lower;
+    return ((upper - lower) * ((float)rand() / static_cast<float>(RAND_MAX))) + lower;
 }
 
 int main( int argc, char **argv )
@@ -46,6 +46,6 @@ int main( int argc, char **argv )
 
     gridView.displayGrid( &simulator.grid() );
     app.exec();
-    
+
     return 0;
 }

@@ -43,13 +43,13 @@ void FluidSimulator::computeFG()
 
     for (int j = 1; j <= jmax; ++j)
     {
-        grid().f()(0,j) = u(0,j);
-        grid().f()(imax,j) = u(imax,j);
+        grid().f()(0, j) = u(0, j);
+        grid().f()(imax, j) = u(imax, j);
     }
     for (int i = 1; i <= imax; ++i)
     {
-        grid().g()(i,0) = v(i,0);
-        grid().g()(i,jmax) = v(i,jmax);
+        grid().g()(i, 0) = v(i, 0);
+        grid().g()(i, jmax) = v(i, jmax);
     }
 
     for (int i = 1; i <= imax; i++)
@@ -81,13 +81,13 @@ void FluidSimulator::computeFG()
             real d2v_dy2 = (v(i, j + 1) - 2 * v(i, j) + v(i, j - 1)) /
                            std::pow(grid().dy(), 2);
             // std::cout << "d2v_dy2: " << d2v_dy2 << std::endl;
-            real dv2_dy = (1 / grid().dy()) * (std::pow((v(i, j) + v(i, j+1)) / 2, 2) - std::pow((v(i, j-1) + v(i, j)) / 2, 2)) +
+            real dv2_dy = (1 / grid().dy()) * (std::pow((v(i, j) + v(i, j + 1)) / 2, 2) - std::pow((v(i, j - 1) + v(i, j)) / 2, 2)) +
                           gamma() * (1 / grid().dy()) *
-                          ((std::abs(v(i, j) + v(i, j + 1)) / 2) * ((v(i, j) - v(i, j+1)) / 2) - (std::abs(v(i, j-1) + v(i, j)) / 2) * ((v(i, j-1) - v(i, j)) / 2));
+                          ((std::abs(v(i, j) + v(i, j + 1)) / 2) * ((v(i, j) - v(i, j + 1)) / 2) - (std::abs(v(i, j - 1) + v(i, j)) / 2) * ((v(i, j - 1) - v(i, j)) / 2));
             // std::cout << "dv2_dy: " << dv2_dy << std::endl;
-            real duv_dx = (1 / grid().dx()) * (((u(i, j) + u(i, j+1)) / 2) * ((v(i, j) + v(i + 1, j)) / 2) - ((u(i-1, j) + u(i - 1, j + 1)) / 2) * ((v(i - 1, j) + v(i, j)) / 2)) +
+            real duv_dx = (1 / grid().dx()) * (((u(i, j) + u(i, j + 1)) / 2) * ((v(i, j) + v(i + 1, j)) / 2) - ((u(i - 1, j) + u(i - 1, j + 1)) / 2) * ((v(i - 1, j) + v(i, j)) / 2)) +
                           gamma() * (1 / grid().dx()) *
-                          ((std::abs(u(i, j) + u(i, j+1)) / 2) * ((v(i, j) - v(i + 1, j)) / 2) - (std::abs(u(i-1, j) + u(i - 1, j + 1)) / 2) * ((v(i - 1, j) - v(i, j)) / 2));
+                          ((std::abs(u(i, j) + u(i, j + 1)) / 2) * ((v(i, j) - v(i + 1, j)) / 2) - (std::abs(u(i - 1, j) + u(i - 1, j + 1)) / 2) * ((v(i - 1, j) - v(i, j)) / 2));
             // std::cout << "duv_dx: " << duv_dx << std::endl;
             grid().g()(i, j) = v(i, j) + dt() *
                                ((1 / re()) * (d2v_dx2 + d2v_dy2) - duv_dx - dv2_dy + gy());
