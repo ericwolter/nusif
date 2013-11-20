@@ -38,6 +38,22 @@ public:
     {
         return rhs_;
     }
+    Array &u()
+    {
+        return u_;
+    }
+    Array &v()
+    {
+        return v_;
+    }
+    Array &f()
+    {
+        return f_;
+    }
+    Array &g()
+    {
+        return g_;
+    }
 
     const Array &p()   const
     {
@@ -46,6 +62,22 @@ public:
     const Array &rhs() const
     {
         return rhs_;
+    }
+    const Array &u() const
+    {
+        return u_;
+    }
+    const Array &v() const
+    {
+        return v_;
+    }
+    const Array &f() const
+    {
+        return f_;
+    }
+    const Array &g() const
+    {
+        return g_;
     }
 
     real dx() const
@@ -57,14 +89,30 @@ public:
         return dy_;
     }
 
+    int xSize() const
+    {
+        return xSize_;
+    }
+    int ySize() const
+    {
+        return ySize_;
+    }
+
     real calculateResidual();
 
 protected:
     Array p_;   //< pressure field
     Array rhs_; //< right hand side of the pressure equation
+    Array u_;   //< velocity in x-direction
+    Array v_;   //< velocity in y-direction
+    Array f_;   //< helper term for velocity in x-direction
+    Array g_;   //< helper term for velocity in y-direction
 
     real dx_;   //< distance between two grid points in x direction
     real dy_;   //< distance between two grid points in y direction
+
+    int xSize_;
+    int ySize_;
 private:
     real caluclateRhsSum(); 
 };

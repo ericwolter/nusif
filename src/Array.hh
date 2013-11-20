@@ -50,6 +50,20 @@ public:
     // Print the whole array ( for debugging purposes )
     void print();
 
+    int xSize() const
+    {
+        return getSize(0);
+    }
+
+    int ySize() const
+    {
+        return getSize(1);
+    }
+
+    int zSize() const
+    {
+        return getSize(2);
+    }    
 private:
 
     real *grid;
@@ -68,7 +82,7 @@ private:
 // Operator() 1D
 inline real &Array::operator ()(int i)
 {
-    ASSERT(i >= 0 && i < getSize())
+    ASSERT_MSG(i >= 0 && i < getSize(0), "i: " << i)
 
     return grid[i];
 }
@@ -76,8 +90,8 @@ inline real &Array::operator ()(int i)
 // Operator() 2D
 inline real &Array::operator ()(int i, int j)
 {
-    ASSERT(i >= 0 && i < getSize(0))
-    ASSERT(j >= 0 && j < getSize(1))
+    ASSERT_MSG(i >= 0 && i < getSize(0), "i: " << i)
+    ASSERT_MSG(j >= 0 && j < getSize(1), "j: " << j)
 
     return grid[i + getSize(0) * j];
 }
@@ -85,9 +99,9 @@ inline real &Array::operator ()(int i, int j)
 // Operator() 3D
 inline real &Array::operator ()(int i, int j, int k)
 {
-    ASSERT(i >= 0 && i < getSize(0))
-    ASSERT(j >= 0 && j < getSize(1))
-    ASSERT(k >= 0 && k < getSize(2))
+    ASSERT_MSG(i >= 0 && i < getSize(0), "i: " << i)
+    ASSERT_MSG(j >= 0 && j < getSize(1), "j: " << j)
+    ASSERT_MSG(k >= 0 && k < getSize(2), "k: " << k)
 
     return grid[i + getSize(0) * (j + getSize(1) * k)];
 }
@@ -100,16 +114,16 @@ inline const real &Array::operator () ( int i ) const
 }
 inline const real &Array::operator () ( int i , int j ) const
 {
-    ASSERT(i >= 0 && i < getSize(0))
-    ASSERT(j >= 0 && j < getSize(1))
+    ASSERT_MSG(i >= 0 && i < getSize(0), "i: " << i)
+    ASSERT_MSG(j >= 0 && j < getSize(1), "j: " << j)
 
     return grid[i + getSize(0) * j];
 }
 inline const real &Array::operator () ( int i, int j, int k ) const
 {
-    ASSERT(i >= 0 && i < getSize(0))
-    ASSERT(j >= 0 && j < getSize(1))
-    ASSERT(k >= 0 && k < getSize(2))
+    ASSERT_MSG(i >= 0 && i < getSize(0), "i: " << i)
+    ASSERT_MSG(j >= 0 && j < getSize(1), "j: " << j)
+    ASSERT_MSG(k >= 0 && k < getSize(2), "k: " << k)
 
     return grid[i + getSize(0) * (j + getSize(1) * k)];
 }

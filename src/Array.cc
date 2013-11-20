@@ -1,6 +1,7 @@
 #include "Array.hh"
 
 #include <iostream>
+#include <iomanip>
 
 //===================================================================================================================
 //
@@ -9,6 +10,8 @@
 //===================================================================================================================
 Array::Array( int xSize )
 {
+    ASSERT(xSize > 0)
+
     grid = new real[xSize];
     dimensions[0] = xSize;
     dimensions[1] = 1;
@@ -17,6 +20,9 @@ Array::Array( int xSize )
 
 Array::Array( int xSize, int ySize )
 {
+    ASSERT(xSize > 0)
+    ASSERT(ySize > 0)
+
     grid = new real[xSize * ySize];
     dimensions[0] = xSize;
     dimensions[1] = ySize;
@@ -25,6 +31,10 @@ Array::Array( int xSize, int ySize )
 
 Array::Array( int xSize, int ySize, int zSize )
 {
+    ASSERT(xSize > 0)
+    ASSERT(ySize > 0)
+    ASSERT(zSize > 0)
+
     grid = new real[xSize * ySize * zSize];
     dimensions[0] = xSize;
     dimensions[1] = ySize;
@@ -125,7 +135,7 @@ void Array::print()
         {
             for (int i = 0; i < dimX; ++i)
             {
-                std::cout << grid[i + getSize(0) * (j + getSize(1) * k)] << ",";
+                std::cout << "\t" <<grid[i + getSize(0) * (j + getSize(1) * k)] << ",";
             }
             std::cout << std::endl;
         }

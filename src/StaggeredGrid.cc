@@ -5,26 +5,40 @@
 StaggeredGrid::StaggeredGrid(int xSize, int ySize, real deltaX, real deltaY) :
     p_(xSize + 2, ySize + 2),
     rhs_(xSize + 2, ySize + 2),
+    u_(xSize + 2, ySize + 2),
+    v_(xSize + 2, ySize + 2),
+    f_(xSize + 1, ySize + 1),
+    g_(xSize + 1, ySize + 1),
     dx_(deltaX),
-    dy_(deltaY)
+    dy_(deltaY),
+    xSize_(xSize),
+    ySize_(ySize)
 {
     ASSERT(dx_ > 0.0)
     ASSERT(dy_ > 0.0)
-    
-    ASSERT( std::abs(caluclateRhsSum()) < 1e-5 );
 }
 
 // Constructor to create a staggered grid from a parsed configuration file
 StaggeredGrid::StaggeredGrid(const FileReader &configuration) :
     p_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
     rhs_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
+    u_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
+    v_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
+    f_(configuration.getIntParameter("imax") + 1, configuration.getIntParameter("jmax") + 1),
+    g_(configuration.getIntParameter("imax") + 1, configuration.getIntParameter("jmax") + 1),
     dx_(configuration.getRealParameter("xlength") / configuration.getIntParameter("imax")),
-    dy_(configuration.getRealParameter("ylength") / configuration.getIntParameter("jmax"))
+    dy_(configuration.getRealParameter("ylength") / configuration.getIntParameter("jmax")),
+    xSize_(configuration.getIntParameter("imax")),
+    ySize_(configuration.getIntParameter("jmax"))
 {
     ASSERT(dx_ > 0.0)
     ASSERT(dy_ > 0.0)
-    
-    ASSERT( std::abs(caluclateRhsSum()) < 1e-5 );
+
+    ASSERT(configuration.getRealParameter("P_init") >= 0.0);
+
+    p().fill(configuration.getRealParameter("P_init"));
+    u().fill(configuration.getRealParameter("U_init"));
+    v().fill(configuration.getRealParameter("V_init"));
 }
 
 real StaggeredGrid::caluclateRhsSum()
