@@ -2,6 +2,14 @@
 
 #include <cmath>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+/*
+*   QT GridView forces xSize and ySize properties on the grid,
+*   however this causes the -Wshadow to occur for the predefined constructors.
+*   Probably would be better to infer the grid size from the given array.
+*   For now simply ignore the warning.
+*/
 StaggeredGrid::StaggeredGrid(int xSize, int ySize, real deltaX, real deltaY) :
     p_(xSize + 2, ySize + 2),
     rhs_(xSize + 2, ySize + 2),
@@ -17,6 +25,7 @@ StaggeredGrid::StaggeredGrid(int xSize, int ySize, real deltaX, real deltaY) :
     ASSERT(dx_ > 0.0)
     ASSERT(dy_ > 0.0)
 }
+#pragma GCC diagnostic pop
 
 // Constructor to create a staggered grid from a parsed configuration file
 StaggeredGrid::StaggeredGrid(const FileReader &configuration) :

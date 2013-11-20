@@ -8,6 +8,12 @@
 //  Constructors
 //
 //===================================================================================================================
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+/*
+*   QT GridView forces xSize and ySize properties on the array,
+*   however this causes the
+*/
 Array::Array( int xSize )
 {
     ASSERT(xSize > 0)
@@ -40,6 +46,7 @@ Array::Array( int xSize, int ySize, int zSize )
     dimensions[1] = ySize;
     dimensions[2] = zSize;
 }
+#pragma GCC diagnostic pop
 
 Array::~Array()
 {
