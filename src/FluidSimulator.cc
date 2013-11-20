@@ -26,7 +26,7 @@ void FluidSimulator::simulate(real duration)
 
 void FluidSimulator::simulateTimeStepCount(unsigned int nrOfTimeSteps)
 {
-    for (int t = 0; t < nrOfTimeSteps; ++t)
+    for (unsigned int t = 0; t < nrOfTimeSteps; ++t)
     {
         simulate(dt());
     }
