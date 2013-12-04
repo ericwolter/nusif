@@ -25,11 +25,11 @@ FluidSimulator::FluidSimulator(const FileReader &conf)
     ASSERT(normalizationfrequency() > 0.0)
 
     std::string bcN = conf.getStringParameter("boundary_condition_N");
-    if (bcN == "OUTFLOW")
+    if (bcN == "outflow")
     {
         boundary_conditions_[NORTH] = OUTFLOW;
     }
-    else if (bcN == "INFLOW")
+    else if (bcN == "inflow")
     {
         boundary_conditions_[NORTH] = INFLOW;
     }
@@ -38,11 +38,11 @@ FluidSimulator::FluidSimulator(const FileReader &conf)
         boundary_conditions_[NORTH] = NOSLIP;
     }
     std::string bcE = conf.getStringParameter("boundary_condition_E");
-    if (bcE == "OUTFLOW")
+    if (bcE == "outflow")
     {
         boundary_conditions_[EAST] = OUTFLOW;
     }
-    else if (bcE == "INFLOW")
+    else if (bcE == "inflow")
     {
         boundary_conditions_[EAST] = INFLOW;
     }
@@ -51,11 +51,11 @@ FluidSimulator::FluidSimulator(const FileReader &conf)
         boundary_conditions_[EAST] = NOSLIP;
     }
     std::string bcS = conf.getStringParameter("boundary_condition_S");
-    if (bcS == "OUTFLOW")
+    if (bcS == "outflow")
     {
         boundary_conditions_[SOUTH] = OUTFLOW;
     }
-    else if (bcS == "INFLOW")
+    else if (bcS == "inflow")
     {
         boundary_conditions_[SOUTH] = INFLOW;
     }
@@ -64,11 +64,11 @@ FluidSimulator::FluidSimulator(const FileReader &conf)
         boundary_conditions_[SOUTH] = NOSLIP;
     }
     std::string bcW = conf.getStringParameter("boundary_condition_W");
-    if (bcW == "OUTFLOW")
+    if (bcW == "outflow")
     {
         boundary_conditions_[WEST] = OUTFLOW;
     }
-    else if (bcW == "INFLOW")
+    else if (bcW == "inflow")
     {
         boundary_conditions_[WEST] = INFLOW;
     }
@@ -86,16 +86,17 @@ FluidSimulator::FluidSimulator(const FileReader &conf)
 void FluidSimulator::simulate(real duration)
 {
     dt_ = duration;
+
     refreshBoundaries();
-    grid().u().print();
-    grid().v().print();
+    // grid().u().print();
+    // grid().v().print();
 
     computeFG();
-    grid().f().print();
-    grid().g().print();
+    // grid().f().print();
+    // grid().g().print();
 
     computeRHS();
-    grid().rhs().print();
+    // grid().rhs().print();
 
     bool res = solver().solve(grid());
     if (!res)
@@ -108,7 +109,7 @@ void FluidSimulator::simulate(real duration)
 
 void FluidSimulator::simulateTimeStepCount(unsigned int nrOfTimeSteps)
 {
-    VTKWriter vtkWriter ( grid(), "lidDrivenCavity", true, true );
+    VTKWriter vtkWriter ( grid(), conf_.getStringParameter("name"), true, true );
 
     real t = 0.0;
     for (int n = 0; n < nrOfTimeSteps; ++n)
@@ -131,6 +132,8 @@ void FluidSimulator::simulateTimeStepCount(unsigned int nrOfTimeSteps)
         {
             vtkWriter.write();
         }
+
+        std::cout << round(((float)n/nrOfTimeSteps)*100) << "%" << std::endl;
     }
 }
 
@@ -296,14 +299,9 @@ void FluidSimulator::computeRHS()
     {
         for (int j = 1; j <= jmax; ++j)
         {
-            real d1 = (1 / dt());
-            real d2 = (grid().f()(i, j) - grid().f()(i - 1, j)) / grid().dx();
-            real d3 = (grid().g()(i, j) - grid().g()(i, j - 1)) / grid().dy();
-            real rhs = d1 * (d2 + d3);
-            grid().rhs()(i, j) = rhs;
-            // grid().rhs()(i, j) = (1 / dt()) *
-            //                      (((grid().f()(i, j) - grid().f()(i - 1, j)) / grid().dx()) +
-            //                       ((grid().g()(i, j) - grid().g()(i, j - 1)) / grid().dy()));
+            grid().rhs()(i, j) = (1 / dt()) *
+                                 (((grid().f()(i, j) - grid().f()(i - 1, j)) / grid().dx()) +
+                                  ((grid().g()(i, j) - grid().g()(i, j - 1)) / grid().dy()));
         }
     }
 }

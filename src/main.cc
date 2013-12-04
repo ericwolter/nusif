@@ -54,12 +54,12 @@ int main( int argc, char **argv )
     // simulator.simulateTimeStepCount(1);
     simulator.simulateTimeStepCount((unsigned int)reader.getIntParameter("timesteps"));
 
-    QApplication app(argc, argv);
-    GridView gridView;
-    gridView.showMaximized();
+    // QApplication app(argc, argv);
+    // GridView gridView;
+    // gridView.showMaximized();
 
-    gridView.displayGrid( &simulator.grid() );
-    app.exec();
+    // gridView.displayGrid( &simulator.grid() );
+    // app.exec();
 
     return 0;
 }

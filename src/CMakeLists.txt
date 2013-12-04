@@ -13,8 +13,6 @@ set ( OWN_SOURCES VTKWriter.cc FileReader.cc Debug.cc Array.cc StaggeredGrid.cc 
 add_executable( nusif ${OWN_SOURCES}  ${VISUALIZATION_FILES}  )
 target_link_libraries( nusif ${QT_LIBRARIES}  )
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../poisson.par
-    ${CMAKE_CURRENT_BINARY_DIR}/${file_name})
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../dcavity.par
-    ${CMAKE_CURRENT_BINARY_DIR}/${file_name})
-    
+configure_file(../poisson.par poisson.par COPYONLY)
+configure_file(../horizontal_pipe.par horizontal_pipe.par COPYONLY)
+configure_file(../dcavity.par dcavity.par COPYONLY)
