@@ -125,7 +125,7 @@ void FluidSimulator::simulateTimeStepCount(unsigned int nrOfTimeSteps)
     VTKWriter vtkWriter ( grid(), conf_.getStringParameter("name"), true, true );
 
     real t = 0.0;
-    for (int n = 0; n < nrOfTimeSteps; ++n)
+    for (unsigned int n = 0; n < nrOfTimeSteps; ++n)
     {
         real deltaT = conf_.getRealParameter("dt");
         if (safetyfactor() >= 0.0)
@@ -146,7 +146,7 @@ void FluidSimulator::simulateTimeStepCount(unsigned int nrOfTimeSteps)
             vtkWriter.write();
         }
 
-        std::cout << round(((float)n/nrOfTimeSteps)*100) << "%" << std::endl;
+        std::cout << round(((double)n/nrOfTimeSteps)*100) << "%" << std::endl;
     }
 }
 
