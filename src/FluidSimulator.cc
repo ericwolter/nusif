@@ -80,6 +80,19 @@ FluidSimulator::FluidSimulator(const FileReader &conf)
     boundary_velocities_[EAST] = conf.getRealParameter("boundary_velocity_E");
     boundary_velocities_[SOUTH] = conf.getRealParameter("boundary_velocity_S");
     boundary_velocities_[WEST] = conf.getRealParameter("boundary_velocity_W");
+
+    if(boundary_conditions_[NORTH] == OUTFLOW && std::abs(boundary_velocities_[NORTH]) > 1e-8)  {
+        WARN("Specifing velocity for outflowing NORTH boundary does not make sense!")
+    }
+    if(boundary_conditions_[EAST] == OUTFLOW && std::abs(boundary_velocities_[EAST]) > 1e-8)  {
+        WARN("Specifing velocity for outflowing EAST boundary does not make sense!")
+    }
+    if(boundary_conditions_[SOUTH] == OUTFLOW && std::abs(boundary_velocities_[SOUTH]) > 1e-8)  {
+        WARN("Specifing velocity for outflowing SOUTH boundary does not make sense!")
+    }
+    if(boundary_conditions_[WEST] == OUTFLOW && std::abs(boundary_velocities_[WEST]) > 1e-8)  {
+        WARN("Specifing velocity for outflowing WEST boundary does not make sense!")
+    }
 }
 
 /// Simulates a given time-length
