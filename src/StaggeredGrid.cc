@@ -15,8 +15,8 @@ StaggeredGrid::StaggeredGrid(int xSize, int ySize, real deltaX, real deltaY) :
     rhs_(xSize + 2, ySize + 2),
     u_(xSize + 2, ySize + 2),
     v_(xSize + 2, ySize + 2),
-    f_(xSize + 1, ySize + 1),
-    g_(xSize + 1, ySize + 1),
+    f_(xSize + 2, ySize + 2),
+    g_(xSize + 2, ySize + 2),
     dx_(deltaX),
     dy_(deltaY),
     xSize_(xSize),
@@ -33,8 +33,8 @@ StaggeredGrid::StaggeredGrid(const FileReader &configuration) :
     rhs_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
     u_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
     v_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
-    f_(configuration.getIntParameter("imax") + 1, configuration.getIntParameter("jmax") + 1),
-    g_(configuration.getIntParameter("imax") + 1, configuration.getIntParameter("jmax") + 1),
+    f_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
+    g_(configuration.getIntParameter("imax") + 2, configuration.getIntParameter("jmax") + 2),
     dx_(configuration.getRealParameter("xlength") / configuration.getIntParameter("imax")),
     dy_(configuration.getRealParameter("ylength") / configuration.getIntParameter("jmax")),
     xSize_(configuration.getIntParameter("imax")),
@@ -43,11 +43,11 @@ StaggeredGrid::StaggeredGrid(const FileReader &configuration) :
     ASSERT(dx_ > 0.0)
     ASSERT(dy_ > 0.0)
 
-    ASSERT(configuration.getRealParameter("P_init") >= 0.0);
+    ASSERT(configuration.getRealParameter("P_INIT") >= 0.0);
 
-    p().fill(configuration.getRealParameter("P_init"));
-    u().fill(configuration.getRealParameter("U_init"));
-    v().fill(configuration.getRealParameter("V_init"));
+    p().fill(configuration.getRealParameter("P_INIT"));
+    u().fill(configuration.getRealParameter("U_INIT"));
+    v().fill(configuration.getRealParameter("V_INIT"));
 }
 
 real StaggeredGrid::caluclateRhsSum()

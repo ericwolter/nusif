@@ -12,6 +12,7 @@ SORSolver::SORSolver(int max_iterations, real epsilon, real weight) :
     omg_(weight)
 {
     checkfrequency_ = 5;
+    ASSERT(checkfrequency_ > 0)
 }
 
 SORSolver::SORSolver(const FileReader &configuration) :
@@ -20,7 +21,7 @@ SORSolver::SORSolver(const FileReader &configuration) :
     omg_(configuration.getRealParameter("omg")),
     checkfrequency_(configuration.getIntParameter("checkfrequency"))
 {
-
+    ASSERT(checkfrequency_ > 0)
 }
 
 
@@ -79,8 +80,6 @@ bool SORSolver::solve( StaggeredGrid &grid )
             residual = grid.calculateResidual();
         }
         ++iteration;
-
-        DEBUG("Iteration: " << iteration << " Residual: " << residual);
     }
     while (residual > eps());
 

@@ -63,6 +63,10 @@ public:
     {
         return normalizationfrequency_;
     }
+    int outputinterval() const
+    {
+        return outputinterval_;
+    }
 
 protected:
     FileReader conf_;
@@ -76,6 +80,7 @@ protected:
     real gy_;
     real safetyfactor_;
     int normalizationfrequency_;
+    int outputinterval_;
 
     BCTYPE boundary_conditions_[4];
     real boundary_velocities_[4];

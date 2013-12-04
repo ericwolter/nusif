@@ -2,8 +2,8 @@ include_directories( ../src )
 
 add_executable( array_test      ../src/Array.cc      ../src/Debug.cc ArrayTest.cc      )
 add_executable( filereader_test ../src/FileReader.cc ../src/Debug.cc FileReaderTest.cc )
-add_executable( sor_test ../src/FileReader.cc ../src/Array.cc ../src/StaggeredGrid.cc ../src/SORSolver.cc ../src/Debug.cc SORTest.cc )
-add_executable( fg_test ../src/FileReader.cc ../src/Array.cc ../src/StaggeredGrid.cc ../src/SORSolver.cc ../src/Debug.cc ../src/FluidSimulator.cc FGTest.cc )
+add_executable( sor_test ../src/VTKWriter.cc ../src/FileReader.cc ../src/Array.cc ../src/StaggeredGrid.cc ../src/SORSolver.cc ../src/Debug.cc SORTest.cc )
+add_executable( fg_test ../src/VTKWriter.cc ../src/FileReader.cc ../src/Array.cc ../src/StaggeredGrid.cc ../src/SORSolver.cc ../src/Debug.cc ../src/FluidSimulator.cc FGTest.cc )
 
 configure_file(ArrayTestInput.txt ArrayTestInput.txt COPYONLY)
 configure_file(FileReaderTestInput.txt FileReaderTestInput.txt COPYONLY)

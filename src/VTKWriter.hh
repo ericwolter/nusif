@@ -27,20 +27,20 @@ class VTKWriter
 
 public:
 
-   VTKWriter(  const StaggeredGrid & grid, const std::string & basename,
-               bool writePressure = true, bool writeVelocity = true );
+    VTKWriter(  const StaggeredGrid &grid, const std::string &basename,
+                bool writePressure = true, bool writeVelocity = true );
 
-   void write();
+    void write();
 
 private:
-   const StaggeredGrid & grid_;
-   std::string baseName_;
+    const StaggeredGrid &grid_;
+    std::string baseName_;
 
-   bool writeVelocity_;
-   bool writePressure_;
+    bool writeVelocity_;
+    bool writePressure_;
 
-   int counter_;
-   std::string header_;
+    int counter_;
+    std::string header_;
 
 };
 
