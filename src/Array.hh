@@ -43,6 +43,8 @@ public:
     // return total size of the array
     int getSize() const;
 
+    real absmax();
+
     // return xSize for dimension==0, ySize for dimension==1 and zSize for dimension==2
     // other dimension values are not allowed
     int getSize(int dimension ) const;

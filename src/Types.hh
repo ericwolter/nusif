@@ -9,7 +9,7 @@ typedef double real;
 
 
 // Enumeration of boundary conditions
-typedef enum { NOSLIP, SLIP, OUTFLOW, PERIODIC } BCTYPE;
+typedef enum { NOSLIP=0, SLIP, OUTFLOW, INFLOW, PERIODIC } BCTYPE;
 
 
 #endif //TYPES_HH

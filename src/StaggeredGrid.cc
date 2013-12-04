@@ -54,16 +54,16 @@ real StaggeredGrid::caluclateRhsSum()
 {
     int imax = rhs().getSize(0) - 2;
     int jmax = rhs().getSize(1) - 2;
-    
+
     real rhs_sum = 0.0;
     for (int i = 1; i <= imax; i++)
     {
         for (int j = 1; j <= jmax; ++j)
         {
-            rhs_sum += rhs()(i,j);
+            rhs_sum += rhs()(i, j);
         }
     }
-    
+
     return rhs_sum;
 }
 
@@ -89,4 +89,40 @@ real StaggeredGrid::calculateResidual()
     }
 
     return sqrt(residual_sum / ( imax * jmax ));
+}
+
+real StaggeredGrid::maxU()
+{
+    return u().absmax();
+}
+real StaggeredGrid::maxV()
+{
+    return v().absmax();
+}
+
+void StaggeredGrid::normalizeP()
+{
+    int imax = p().getSize(0) - 2;
+    int jmax = p().getSize(1) - 2;
+
+    real sum = 0.0;
+    int count = 0;
+    for (int i = 1; i <= imax; i++)
+    {
+        for (int j = 1; j <= jmax; ++j)
+        {
+            sum += p()(i, j);
+            count++;
+        }
+    }
+
+    real avg = sum / count;
+
+    for (int i = 1; i <= imax; i++)
+    {
+        for (int j = 1; j <= jmax; ++j)
+        {
+            p()(i, j) -= avg;
+        }
+    }
 }

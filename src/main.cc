@@ -33,6 +33,7 @@ int main( int argc, char **argv )
     reader.registerRealParameter("eps");
     reader.registerRealParameter("omg");
     reader.registerRealParameter("gamma");
+    reader.registerRealParameter("safetyfactor");
 
     bool res = reader.readFile ( "dcavity.par" );
     CHECK_MSG(res, "Could not open file 'dcavity.par' which has to be in the current directory.");
@@ -40,12 +41,12 @@ int main( int argc, char **argv )
     FluidSimulator simulator(reader);
     simulator.simulateTimeStepCount(1);
 
-    QApplication app(argc, argv);
-    GridView gridView;
-    gridView.showMaximized();
+    // QApplication app(argc, argv);
+    // GridView gridView;
+    // gridView.showMaximized();
 
-    gridView.displayGrid( &simulator.grid() );
-    app.exec();
+    // gridView.displayGrid( &simulator.grid() );
+    // app.exec();
 
     return 0;
 }

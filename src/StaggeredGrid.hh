@@ -99,6 +99,9 @@ public:
     }
 
     real calculateResidual();
+    real maxU();
+    real maxV();
+    void normalizeP();
 
 protected:
     Array p_;   //< pressure field
@@ -115,6 +118,7 @@ protected:
     int ySize_;
 private:
     real caluclateRhsSum(); 
+
 };
 
 

@@ -6,6 +6,8 @@
 #include "StaggeredGrid.hh"
 #include "SORSolver.hh"
 
+enum boundary_direction_t { NORTH, EAST, SOUTH, WEST };
+
 class FluidSimulator
 {
 public:
@@ -53,8 +55,17 @@ public:
     {
         return gy_;
     }
+    real safetyfactor() const
+    {
+        return safetyfactor_;
+    }
+    int normalizationfrequency() const
+    {
+        return normalizationfrequency_;
+    }
 
 protected:
+    FileReader conf_;
     StaggeredGrid grid_;
     SORSolver solver_;
 
@@ -63,9 +74,18 @@ protected:
     real re_;
     real gx_;
     real gy_;
+    real safetyfactor_;
+    int normalizationfrequency_;
+
+    BCTYPE boundary_conditions_[4];
+    real boundary_velocities_[4];
 
 private:
     void computeFG();
+    void computeRHS();
+    void updateVelocities();
+    real determineNextDT( real const & limit);
+    void refreshBoundaries();
 };
 
 

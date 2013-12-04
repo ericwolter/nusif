@@ -8,7 +8,7 @@ include( visualization/AddQtFolders.cmake )
 add_qt_folders ( VISUALIZATION_FILES "visualization" )
 
 include_directories( . "visualization" )
-set ( OWN_SOURCES FileReader.cc Debug.cc Array.cc StaggeredGrid.cc SORSolver.cc FluidSimulator.cc main.cc  )
+set ( OWN_SOURCES FileReader.cc Debug.cc Array.cc StaggeredGrid.cc SORSolver.cc FluidSimulator.cc VTKWriter.cc main.cc  )
 
 add_executable( nusif ${OWN_SOURCES}  ${VISUALIZATION_FILES}  )
 target_link_libraries( nusif ${QT_LIBRARIES}  )

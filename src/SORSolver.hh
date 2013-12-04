@@ -27,11 +27,16 @@ public:
     {
         return omg_;
     }
+    int checkfrequency() const
+    {
+        return checkfrequency_;
+    }
 
 private:
     int itermax_;    //< maximal number of pressure iteration in one time step
     real eps_;       //< stopping tolerance for pressure iteration
     real omg_;       //< relaxation parameter for SOR iteration
+    int checkfrequency_;
 
     void calculateBoundary ( int imax, int jmax, Array &arr );
 };

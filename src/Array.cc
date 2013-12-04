@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 
 //===================================================================================================================
 //
@@ -142,7 +143,7 @@ void Array::print()
         {
             for (int i = 0; i < dimX; ++i)
             {
-                std::cout << "\t" <<grid[i + getSize(0) * (j + getSize(1) * k)] << ",";
+                std::cout << "\t" << grid[i + getSize(0) * (j + getSize(1) * k)] << ",";
             }
             std::cout << std::endl;
         }
@@ -159,4 +160,17 @@ int Array::getSize( int dimension ) const
 int Array::getSize() const
 {
     return dimensions[0] * dimensions[1] * dimensions[2];
+}
+
+real Array::absmax()
+{
+    real max = std::abs(grid[0]);
+    for (int i = 0; i < getSize(); ++i)
+    {
+        if (std::abs(grid[i]) > max)
+        {
+            max = std::abs(grid[i]);
+        }
+    }
+    return max;
 }
