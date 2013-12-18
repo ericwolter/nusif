@@ -27,7 +27,7 @@ SORSolver::SORSolver(const FileReader &configuration) :
 
 void SORSolver::calculateBoundary(int imax, int jmax, Array &arr)
 {
-    // copy values if inner points to boundary points
+    // copy values of inner points to boundary points
     for (int i = 1; i <= imax; ++i)
     {
         arr(i, 0) = arr(i, 1);
@@ -64,19 +64,24 @@ bool SORSolver::solve( StaggeredGrid &grid )
         {
             for (int j = 1; j <= jmax; ++j)
             {
+                if (!grid.isFluid(i, j))
+                {
+                    continue;
+                }
                 real f_ij = grid.rhs()(i, j);
 
                 grid.p()(i, j) = (1 - omg()) * grid.p()(i, j)
                                  + omg() / ( (2 / (grid.dx() * grid.dx()))  + (2 / (grid.dy() * grid.dy())) )
-                                 * ((  (grid.p()(i + 1, j) + grid.p()(i - 1, j)) / (grid.dx() * grid.dx())
-                                       + (grid.p()(i, j + 1) + grid.p()(i, j - 1)) / (grid.dy() * grid.dy()) )
+                                 * ((  (grid.p(i + 1, j, WEST) + grid.p(i - 1, j, EAST)) / (grid.dx() * grid.dx())
+                                       + (grid.p(i, j + 1, SOUTH) + grid.p(i, j - 1, NORTH)) / (grid.dy() * grid.dy()) )
                                     - f_ij);
             }
         }
 
         calculateBoundary(imax, jmax, grid.p());
 
-        if(iteration % checkfrequency() == 0) {
+        if (iteration % checkfrequency() == 0)
+        {
             residual = grid.calculateResidual();
         }
         ++iteration;

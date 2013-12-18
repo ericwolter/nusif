@@ -1,6 +1,7 @@
 .DS_Store
 .kateproject*
 build/
+xcode/
 CMakeCache.txt
 CMakeFiles
 Makefile

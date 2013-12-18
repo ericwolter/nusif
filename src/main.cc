@@ -47,12 +47,44 @@ int main( int argc, char **argv )
     reader.registerStringParameter("boundary_condition_S");
     reader.registerStringParameter("boundary_condition_W");
 
-    bool res = reader.readFile ( "dcavity.par" );
+    reader.registerRealParameter("RectangleX1");
+    reader.registerRealParameter("RectangleY1");
+    reader.registerRealParameter("RectangleX2");
+    reader.registerRealParameter("RectangleY2");
+
+    bool res = reader.readFile ( "backstep.par" );
     CHECK_MSG(res, "Could not open file 'dcavity.par' which has to be in the current directory.");
 
     FluidSimulator simulator(reader);
+
+    int x1 = (int)(reader.getRealParameter("RectangleX1") /
+             (reader.getRealParameter("xlength") / reader.getIntParameter("imax")));
+    int y1 = (int)(reader.getRealParameter("RectangleY1") /
+             (reader.getRealParameter("ylength") / reader.getIntParameter("jmax")));
+    int x2 = (int)(reader.getRealParameter("RectangleX2") /
+             (reader.getRealParameter("xlength") / reader.getIntParameter("imax")));
+    int y2 = (int)(reader.getRealParameter("RectangleY2") /
+             (reader.getRealParameter("ylength") / reader.getIntParameter("jmax")));
+
+    // std::cout << x1 << ":" << y1 << ":" << x2 << ":" << y2 << std::endl;
+
+    simulator.grid().createRectangle(x1, y1, x2, y2);
+    // simulator.grid().loadObstacles("rect.png");
+    // std::cout<<simulator.grid().getNumFluid()<<std::endl;
     // simulator.simulateTimeStepCount(1);
-    simulator.simulateTimeStepCount((unsigned int)reader.getIntParameter("timesteps"));
+    int imax = simulator.grid().p().getSize(0) - 2;
+    int jmax = simulator.grid().p().getSize(1) - 2;
+
+    for (int i = 1; i <= imax; ++i)
+    {
+        for (int j = jmax/2; j <= jmax; ++j)
+        {
+            simulator.grid().u()(i,j) = 1.0;
+        }
+    }
+    simulator.grid().u().print();
+
+    simulator.simulateTimeStepCount(reader.getIntParameter("timesteps"));
 
     // QApplication app(argc, argv);
     // GridView gridView;

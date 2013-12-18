@@ -5,8 +5,7 @@
 #include "FileReader.hh"
 #include "StaggeredGrid.hh"
 #include "SORSolver.hh"
-
-enum boundary_direction_t { NORTH, EAST, SOUTH, WEST };
+#include "Types.hh"
 
 class FluidSimulator
 {
@@ -15,7 +14,7 @@ public:
 
     /// Simulates a given time-length
     void simulate             ( real duration              );
-    void simulateTimeStepCount( unsigned int nrOfTimeSteps );
+    void simulateTimeStepCount( int nrOfTimeSteps );
 
 
     // Getter functions for the internally stored StaggeredGrid

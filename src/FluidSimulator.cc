@@ -81,16 +81,20 @@ FluidSimulator::FluidSimulator(const FileReader &conf)
     boundary_velocities_[SOUTH] = conf.getRealParameter("boundary_velocity_S");
     boundary_velocities_[WEST] = conf.getRealParameter("boundary_velocity_W");
 
-    if(boundary_conditions_[NORTH] == OUTFLOW && std::abs(boundary_velocities_[NORTH]) > 1e-8)  {
+    if (boundary_conditions_[NORTH] == OUTFLOW && std::abs(boundary_velocities_[NORTH]) > 1e-8)
+    {
         WARN("Specifing velocity for outflowing NORTH boundary does not make sense!")
     }
-    if(boundary_conditions_[EAST] == OUTFLOW && std::abs(boundary_velocities_[EAST]) > 1e-8)  {
+    if (boundary_conditions_[EAST] == OUTFLOW && std::abs(boundary_velocities_[EAST]) > 1e-8)
+    {
         WARN("Specifing velocity for outflowing EAST boundary does not make sense!")
     }
-    if(boundary_conditions_[SOUTH] == OUTFLOW && std::abs(boundary_velocities_[SOUTH]) > 1e-8)  {
+    if (boundary_conditions_[SOUTH] == OUTFLOW && std::abs(boundary_velocities_[SOUTH]) > 1e-8)
+    {
         WARN("Specifing velocity for outflowing SOUTH boundary does not make sense!")
     }
-    if(boundary_conditions_[WEST] == OUTFLOW && std::abs(boundary_velocities_[WEST]) > 1e-8)  {
+    if (boundary_conditions_[WEST] == OUTFLOW && std::abs(boundary_velocities_[WEST]) > 1e-8)
+    {
         WARN("Specifing velocity for outflowing WEST boundary does not make sense!")
     }
 }
@@ -120,12 +124,12 @@ void FluidSimulator::simulate(real duration)
     updateVelocities();
 }
 
-void FluidSimulator::simulateTimeStepCount(unsigned int nrOfTimeSteps)
+void FluidSimulator::simulateTimeStepCount(int nrOfTimeSteps)
 {
     VTKWriter vtkWriter ( grid(), conf_.getStringParameter("name"), true, true );
 
     real t = 0.0;
-    for (unsigned int n = 0; n < nrOfTimeSteps; ++n)
+    for (int n = 0; n < nrOfTimeSteps; ++n)
     {
         real deltaT = conf_.getRealParameter("dt");
         if (safetyfactor() >= 0.0)
@@ -146,7 +150,7 @@ void FluidSimulator::simulateTimeStepCount(unsigned int nrOfTimeSteps)
             vtkWriter.write();
         }
 
-        std::cout << round(((double)n/nrOfTimeSteps)*100) << "%" << std::endl;
+        std::cout << round(((double)n / nrOfTimeSteps) * 100) << "%" << std::endl;
     }
 }
 
@@ -236,68 +240,75 @@ void FluidSimulator::refreshBoundaries()
 void FluidSimulator::computeFG()
 {
     // temporary variables for easier reading of the formulas
-    const Array u = grid().u();
-    const Array v = grid().v();
+    StaggeredGrid g = grid();
+    const Array u = g.u();
+    const Array v = g.v();
 
-    int imax = grid().p().getSize(0) - 2;
-    int jmax = grid().p().getSize(1) - 2;
+    int imax = g.p().getSize(0) - 2;
+    int jmax = g.p().getSize(1) - 2;
 
     for (int j = 1; j <= jmax; ++j)
     {
-        grid().f()(0, j) = u(0, j);
-        grid().f()(imax, j) = u(imax, j);
+        g.f()(0, j) = u(0, j);
+        g.f()(imax, j) = u(imax, j);
     }
     for (int i = 1; i <= imax; ++i)
     {
-        grid().g()(i, 0) = v(i, 0);
-        grid().g()(i, jmax) = v(i, jmax);
+        g.g()(i, 0) = v(i, 0);
+        g.g()(i, jmax) = v(i, jmax);
     }
-
+  
     for (int i = 1; i <= imax; i++)
     {
         for (int j = 1; j <= jmax; ++j)
         {
             if (i <= imax - 1)
             {
-                // std::cout << "i,j: " << i << "," << j << std::endl;
-                real d2u_dx2 = (u(i + 1, j) - 2 * u(i, j) + u(i - 1, j)) /
-                               std::pow(grid().dx(), 2);
-                // std::cout << "d2u_dx2: " << d2u_dx2 << std::endl;
-                real d2u_dy2 = (u(i, j + 1) - 2 * u(i, j) + u(i, j - 1)) /
-                               std::pow(grid().dy(), 2);
-                // std::cout << "d2u_dy2: " << d2u_dy2 << std::endl;
-                real du2_dx = (1 / grid().dx()) * (std::pow((u(i, j) + u(i + 1, j)) / 2, 2) - std::pow((u(i - 1, j) + u(i, j)) / 2, 2)) +
-                              gamma() * (1 / grid().dx()) *
-                              ((std::abs(u(i, j) + u(i + 1, j)) / 2) * ((u(i, j) - u(i + 1, j)) / 2) - (std::abs(u(i - 1, j) + u(i, j)) / 2) * ((u(i - 1, j) - u(i, j)) / 2));
-                // std::cout << "du2_dx: " << du2_dx << std::endl;
-                real duv_dy = (1 / grid().dy()) * (((v(i, j) + v(i + 1, j)) / 2) * ((u(i, j) + u(i, j + 1)) / 2) - ((v(i, j - 1) + v(i + 1, j - 1)) / 2) * ((u(i, j - 1) + u(i, j)) / 2)) +
-                              gamma() * (1 / grid().dy()) *
-                              ((std::abs(v(i, j) + v(i + 1, j)) / 2) * ((u(i, j) - u(i, j + 1)) / 2) - (std::abs(v(i, j - 1) + v(i + 1, j - 1)) / 2) * ((u(i, j - 1) - u(i, j)) / 2));
-                // std::cout << "duv_dy: " << duv_dy << std::endl;
-                grid().f()(i, j) = u(i, j) + dt() *
-                                   ((1 / re()) * (d2u_dx2 + d2u_dy2) - du2_dx - duv_dy + gx());
-                // std::cout << "F: " << grid().f()(i, j) << std::endl;
+                if (grid().isFluid(i, j) && grid().isFluid(i + 1, j))
+                {
+                    // std::cout << "i,j: " << i << "," << j << std::endl;
+                    real d2u_dx2 = (g.u(i + 1, j, WEST) - 2 * u(i, j) + g.u(i - 1, j, EAST)) /
+                                   std::pow(grid().dx(), 2);
+                    // std::cout << "d2u_dx2: " << d2u_dx2 << std::endl;
+                    real d2u_dy2 = (g.u(i, j + 1, SOUTH) - 2 * u(i, j) + g.u(i, j - 1, NORTH)) /
+                                   std::pow(grid().dy(), 2);
+                    // std::cout << "d2u_dy2: " << d2u_dy2 << std::endl;
+                    real du2_dx = (1 / grid().dx()) * (std::pow((u(i, j) + g.u(i + 1, j, WEST)) / 2, 2) - std::pow((g.u(i - 1, j, EAST) + u(i, j)) / 2, 2)) +
+                                  gamma() * (1 / grid().dx()) *
+                                  ((std::abs(u(i, j) + g.u(i + 1, j, WEST)) / 2) * ((u(i, j) - g.u(i + 1, j, WEST)) / 2) - (std::abs(g.u(i - 1, j, EAST) + u(i, j)) / 2) * ((g.u(i - 1, j, EAST) - u(i, j)) / 2));
+                    // std::cout << "du2_dx: " << du2_dx << std::endl;
+                    real duv_dy = (1 / grid().dy()) * (((v(i, j) + g.v(i + 1, j, WEST)) / 2) * ((u(i, j) + g.u(i, j + 1, SOUTH)) / 2) - ((g.v(i, j - 1, NORTH) + g.v(i + 1, j - 1, NORTH_WEST)) / 2) * ((g.u(i, j - 1, NORTH) + u(i, j)) / 2)) +
+                                  gamma() * (1 / grid().dy()) *
+                                  ((std::abs(v(i, j) + g.v(i + 1, j, WEST)) / 2) * ((u(i, j) - g.u(i, j + 1, SOUTH)) / 2) - (std::abs(g.v(i, j - 1, NORTH) + g.v(i + 1, j - 1, NORTH_WEST)) / 2) * ((g.u(i, j - 1, NORTH) - u(i, j)) / 2));
+                    // std::cout << "duv_dy: " << duv_dy << std::endl;
+                    grid().f()(i, j) = u(i, j) + dt() *
+                                       ((1 / re()) * (d2u_dx2 + d2u_dy2) - du2_dx - duv_dy + gx());
+                    //  std::cout << "F: " << grid().f()(i, j) << std::endl;
+                }
             }
 
             if (j <= jmax - 1)
             {
-                real d2v_dx2 = (v(i + 1, j) - 2 * v(i, j) + v(i - 1, j)) /
-                               std::pow(grid().dx(), 2);
-                // std::cout << "d2v_dx2: " << d2v_dx2 << std::endl;
-                real d2v_dy2 = (v(i, j + 1) - 2 * v(i, j) + v(i, j - 1)) /
-                               std::pow(grid().dy(), 2);
-                // std::cout << "d2v_dy2: " << d2v_dy2 << std::endl;
-                real dv2_dy = (1 / grid().dy()) * (std::pow((v(i, j) + v(i, j + 1)) / 2, 2) - std::pow((v(i, j - 1) + v(i, j)) / 2, 2)) +
-                              gamma() * (1 / grid().dy()) *
-                              ((std::abs(v(i, j) + v(i, j + 1)) / 2) * ((v(i, j) - v(i, j + 1)) / 2) - (std::abs(v(i, j - 1) + v(i, j)) / 2) * ((v(i, j - 1) - v(i, j)) / 2));
-                // std::cout << "dv2_dy: " << dv2_dy << std::endl;
-                real duv_dx = (1 / grid().dx()) * (((u(i, j) + u(i, j + 1)) / 2) * ((v(i, j) + v(i + 1, j)) / 2) - ((u(i - 1, j) + u(i - 1, j + 1)) / 2) * ((v(i - 1, j) + v(i, j)) / 2)) +
-                              gamma() * (1 / grid().dx()) *
-                              ((std::abs(u(i, j) + u(i, j + 1)) / 2) * ((v(i, j) - v(i + 1, j)) / 2) - (std::abs(u(i - 1, j) + u(i - 1, j + 1)) / 2) * ((v(i - 1, j) - v(i, j)) / 2));
-                // std::cout << "duv_dx: " << duv_dx << std::endl;
-                grid().g()(i, j) = v(i, j) + dt() *
-                                   ((1 / re()) * (d2v_dx2 + d2v_dy2) - duv_dx - dv2_dy + gy());
-                // std::cout << "G: " << grid().g()(i, j) << std::endl;
+                if (grid().isFluid(i, j) && grid().isFluid(i, j + 1))
+                {
+                    real d2v_dx2 = (g.v(i + 1, j, WEST) - 2 * v(i, j) + g.v(i - 1, j, EAST)) /
+                                   std::pow(grid().dx(), 2);
+                    // std::cout << "d2v_dx2: " << d2v_dx2 << std::endl;
+                    real d2v_dy2 = (g.v(i, j + 1, SOUTH) - 2 * v(i, j) + g.v(i, j - 1, NORTH)) /
+                                   std::pow(grid().dy(), 2);
+                    // std::cout << "d2v_dy2: " << d2v_dy2 << std::endl;
+                    real dv2_dy = (1 / grid().dy()) * (std::pow((v(i, j) + g.v(i, j + 1, SOUTH)) / 2, 2) - std::pow((g.v(i, j - 1, NORTH) + v(i, j)) / 2, 2)) +
+                                  gamma() * (1 / grid().dy()) *
+                                  ((std::abs(v(i, j) + g.v(i, j + 1, SOUTH)) / 2) * ((v(i, j) - g.v(i, j + 1, SOUTH)) / 2) - (std::abs(g.v(i, j - 1, NORTH) + v(i, j)) / 2) * ((g.v(i, j - 1, NORTH) - v(i, j)) / 2));
+                    // std::cout << "dv2_dy: " << dv2_dy << std::endl;
+                    real duv_dx = (1 / grid().dx()) * (((u(i, j) + g.u(i, j + 1, SOUTH)) / 2) * ((v(i, j) + g.v(i + 1, j, WEST)) / 2) - ((g.u(i - 1, j, EAST) + g.u(i - 1, j + 1, SOUTH_EAST)) / 2) * ((g.v(i - 1, j, EAST) + v(i, j)) / 2)) +
+                                  gamma() * (1 / grid().dx()) *
+                                  ((std::abs(u(i, j) + g.u(i, j + 1, SOUTH)) / 2) * ((v(i, j) - g.v(i + 1, j, WEST)) / 2) - (std::abs(g.u(i - 1, j, EAST) + g.u(i - 1, j + 1, SOUTH_EAST)) / 2) * ((g.v(i - 1, j, EAST) - v(i, j)) / 2));
+                    // std::cout << "duv_dx: " << duv_dx << std::endl;
+                    grid().g()(i, j) = v(i, j) + dt() *
+                                       ((1 / re()) * (d2v_dx2 + d2v_dy2) - duv_dx - dv2_dy + gy());
+                    // std::cout << "G: " << grid().g()(i, j) << std::endl;
+                }
             }
         }
     }
@@ -312,9 +323,14 @@ void FluidSimulator::computeRHS()
     {
         for (int j = 1; j <= jmax; ++j)
         {
+            if (!grid().isFluid(i, j))
+            {
+                continue;
+            }
+
             grid().rhs()(i, j) = (1 / dt()) *
-                                 (((grid().f()(i, j) - grid().f()(i - 1, j)) / grid().dx()) +
-                                  ((grid().g()(i, j) - grid().g()(i, j - 1)) / grid().dy()));
+                                 (((grid().f()(i, j) - grid().f(i - 1, j, EAST)) / grid().dx()) +
+                                  ((grid().g()(i, j) - grid().g(i, j - 1, NORTH)) / grid().dy()));
         }
     }
 }
@@ -330,12 +346,17 @@ void FluidSimulator::updateVelocities()
         {
             if (i <= imax - 1)
             {
-                grid().u()(i, j) = grid().f()(i, j) - (dt() / grid().dx()) * (grid().p()(i + 1, j) - grid().p()(i, j));
+                if (grid().isFluid(i, j) && grid().isFluid(i + 1, j))
+                {
+                    grid().u()(i, j) = grid().f()(i, j) - (dt() / grid().dx()) * (grid().p(i + 1, j, WEST) - grid().p()(i, j));
+                }
             }
             if (j <= jmax - 1)
             {
-                grid().v()(i, j) = grid().g()(i, j) - (dt() / grid().dy()) * (grid().p()(i, j + 1) - grid().p()(i, j));
-
+                if (grid().isFluid(i, j) && grid().isFluid(i, j + 1))
+                {
+                    grid().v()(i, j) = grid().g()(i, j) - (dt() / grid().dy()) * (grid().p(i, j + 1, SOUTH) - grid().p()(i, j));
+                }
             }
         }
     }
