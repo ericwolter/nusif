@@ -82,7 +82,6 @@ int main( int argc, char **argv )
             simulator.grid().u()(i,j) = 1.0;
         }
     }
-    simulator.grid().u().print();
 
     simulator.simulateTimeStepCount(reader.getIntParameter("timesteps"));
 

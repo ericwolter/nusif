@@ -159,8 +159,6 @@ void StaggeredGrid::createRectangle(int x1, int y1, int x2, int y2)
     int minY = std::min(y1, y2);
     int maxY = std::max(y1, y2);
 
-    std::cout << minX << ":" << maxX << ":" << minY << ":" << maxY << std::endl;
-
     for (int i = minX; i <= maxX; ++i)
     {
         for (int j = minY; j < maxY; ++j)
